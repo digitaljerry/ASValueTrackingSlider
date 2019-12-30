@@ -7,10 +7,12 @@
 //
 
 #import "ASValueTrackingSlider.h"
-#import "ASValuePopUpView.h"
+#import "ASValuePopUpViewDetailed.h"
+#import "ASSliderDetails.h"
 
-@interface ASValueTrackingSlider() <ASValuePopUpViewDelegate>
-@property (strong, nonatomic) ASValuePopUpView *popUpView;
+@interface ASValueTrackingSlider()
+//@property (strong, nonatomic) ASValuePopUpView *popUpView;
+@property (strong, nonatomic) ASValuePopUpViewDetailed *popUpViewDetailed;
 @property (nonatomic) BOOL popUpViewAlwaysOn; // default is NO
 @end
 
@@ -55,39 +57,40 @@
     if (autoAdjust == NO) {
         super.minimumTrackTintColor = nil; // sets track to default blue color
     } else {
-        super.minimumTrackTintColor = [self.popUpView opaqueColor];
+        super.minimumTrackTintColor = [UIColor redColor];
     }
 }
 
 - (void)setTextColor:(UIColor *)color
 {
     _textColor = color;
-    [self.popUpView setTextColor:color];
+//    [self.popUpView setTextColor:color];
 }
 
 - (void)setFont:(UIFont *)font
 {
     NSAssert(font, @"font can not be nil, it must be a valid UIFont");
     _font = font;
-    [self.popUpView setFont:font];
+//    [self.popUpView setFont:font];
 }
 
 // return the currently displayed color if possible, otherwise return _popUpViewColor
 // if animated colors are set, the color will change each time the slider value changes
 - (UIColor *)popUpViewColor
 {
-    return self.popUpView.color ?: _popUpViewColor;
+    return UIColor.yellowColor;
+//    return self.popUpView.color ?: _popUpViewColor;
 }
 
 - (void)setPopUpViewColor:(UIColor *)color
 {
     _popUpViewColor = color;
     _popUpViewAnimatedColors = nil; // animated colors should be discarded
-    [self.popUpView setColor:color];
+//    [self.popUpView setColor:color];
 
-    if (_autoAdjustTrackColor) {
-        super.minimumTrackTintColor = [self.popUpView opaqueColor];
-    }
+//    if (_autoAdjustTrackColor) {
+//        super.minimumTrackTintColor = [self.popUpView opaqueColor];
+//    }
 }
 
 - (void)setPopUpViewAnimatedColors:(NSArray *)colors
@@ -108,7 +111,7 @@
     _keyTimes = [self keyTimesFromSliderPositions:positions];
     
     if ([colors count] >= 2) {
-        [self.popUpView setAnimatedColors:colors withKeyTimes:_keyTimes];
+//        [self.popUpView setAnimatedColors:colors withKeyTimes:_keyTimes];
     } else {
         [self setPopUpViewColor:[colors lastObject] ?: _popUpViewColor];
     }
@@ -116,42 +119,45 @@
 
 - (void)setPopUpViewCornerRadius:(CGFloat)radius
 {
-    self.popUpView.cornerRadius = radius;
+//    self.popUpView.cornerRadius = radius;
 }
 
 - (CGFloat)popUpViewCornerRadius
 {
-    return self.popUpView.cornerRadius;
+//    return self.popUpView.cornerRadius;
 }
 
 - (void)setPopUpViewArrowLength:(CGFloat)length
 {
-    self.popUpView.arrowLength = length;
+//    self.popUpView.arrowLength = length;
 }
 
 - (CGFloat)popUpViewArrowLength
 {
-    return self.popUpView.arrowLength;
+//    return self.popUpView.arrowLength;
 }
 
 - (void)setPopUpViewWidthPaddingFactor:(CGFloat)factor
 {
-    self.popUpView.widthPaddingFactor = factor;
+//    self.popUpView.widthPaddingFactor = factor;
 }
 
 - (CGFloat)popUpViewWidthPaddingFactor
 {
-    return self.popUpView.widthPaddingFactor;
+    return 0;
+//    return self.popUpView.widthPaddingFactor;
 }
 
 - (void)setPopUpViewHeightPaddingFactor:(CGFloat)factor
 {
-    self.popUpView.heightPaddingFactor = factor;
+//    return 0;
+//    self.popUpView.heightPaddingFactor = factor;
 }
 
 - (CGFloat)popUpViewHeightPaddingFactor
 {
-    return self.popUpView.heightPaddingFactor;
+    return 0;
+//    return self.popUpView.heightPaddingFactor;
 }
 
 // when either the min/max value or number formatter changes, recalculate the popUpView width
@@ -224,12 +230,13 @@
     [formatter setMinimumFractionDigits:2];
     _numberFormatter = formatter;
 
-    self.popUpView = [[ASValuePopUpView alloc] initWithFrame:CGRectZero];
+//    self.popUpView = [[ASValuePopUpView alloc] initWithFrame:CGRectZero];
+    self.popUpViewDetailed = [[ASValuePopUpViewDetailed alloc] initWithFrame: CGRectMake(0, 0, 148, 283)];
     self.popUpViewColor = [UIColor colorWithHue:0.6 saturation:0.6 brightness:0.5 alpha:0.8];
 
-    self.popUpView.alpha = 0.0;
-    self.popUpView.delegate = self;
-    [self addSubview:self.popUpView];
+    self.popUpViewDetailed.alpha = 0.0;
+//    self.popUpView.delegate = self;
+    [self addSubview:self.popUpViewDetailed];
 
     self.textColor = [UIColor whiteColor];
     self.font = [UIFont boldSystemFontOfSize:22.0f];
@@ -239,20 +246,21 @@
 - (void)didBecomeActiveNotification:(NSNotification *)note
 {
     if (self.popUpViewAnimatedColors) {
-        [self.popUpView setAnimatedColors:_popUpViewAnimatedColors withKeyTimes:_keyTimes];
+//        [self.popUpView setAnimatedColors:_popUpViewAnimatedColors withKeyTimes:_keyTimes];
     }
 }
 
 - (void)updatePopUpView
 {
     NSString *valueString; // ask dataSource for string, if nil or blank, get string from _numberFormatter
-    CGSize popUpViewSize;
-    if ((valueString = [self.dataSource slider:self stringForValue:self.value]) && valueString.length != 0) {
-        popUpViewSize = [self.popUpView popUpSizeForString:valueString];
-    } else {
-        valueString = [_numberFormatter stringFromNumber:@(self.value)];
-        popUpViewSize = [self calculatePopUpViewSize];
-    }
+    CGSize popUpViewSize = self.popUpViewDetailed.frame.size;
+    ASSliderDetails *details = [ASSliderDetails detailsFromDict: [self.dataSource slider:self stringForValue:self.value]];
+//    if ((valueString = [self.dataSource slider:self stringForValue:self.value]) && valueString.length != 0) {
+//        popUpViewSize = [self.popUpView popUpSizeForString:valueString];
+//    } else {
+//        valueString = [_numberFormatter stringFromNumber:@(self.value)];
+//        popUpViewSize = [self calculatePopUpViewSize];
+//    }
     
     // calculate the popUpView frame
     CGRect thumbRect = [self thumbRect];
@@ -270,17 +278,17 @@
     CGFloat offset = minOffsetX < 0.0 ? minOffsetX : (maxOffsetX > 0.0 ? maxOffsetX : 0.0);
     popUpRect.origin.x -= offset;
     
-    [self.popUpView setFrame:popUpRect arrowOffset:offset text:valueString];
+    [self.popUpViewDetailed setFrame:popUpRect arrowOffset:offset details: details];
 }
 
-- (CGSize)calculatePopUpViewSize
-{
-    // negative values need more width than positive values
-    CGSize minValSize = [self.popUpView popUpSizeForString:[_numberFormatter stringFromNumber:@(self.minimumValue)]];
-    CGSize maxValSize = [self.popUpView popUpSizeForString:[_numberFormatter stringFromNumber:@(self.maximumValue)]];
-
-    return (minValSize.width >= maxValSize.width) ? minValSize : maxValSize;
-}
+//- (CGSize)calculatePopUpViewSize
+//{
+//    // negative values need more width than positive values
+//    CGSize minValSize = [self.popUpView popUpSizeForString:[_numberFormatter stringFromNumber:@(self.minimumValue)]];
+//    CGSize maxValSize = [self.popUpView popUpSizeForString:[_numberFormatter stringFromNumber:@(self.maximumValue)]];
+//
+//    return (minValSize.width >= maxValSize.width) ? minValSize : maxValSize;
+//}
 
 // takes an array of NSNumbers in the range self.minimumValue - self.maximumValue
 // returns an array of NSNumbers in the range 0.0 - 1.0
@@ -305,7 +313,7 @@
 - (void)_showPopUpViewAnimated:(BOOL)animated
 {
     if (self.delegate) [self.delegate sliderWillDisplayPopUpView:self];
-    [self.popUpView showAnimated:animated];
+    [self.popUpViewDetailed showAnimated:animated];
 }
 
 - (void)_hidePopUpViewAnimated:(BOOL)animated
@@ -313,7 +321,7 @@
     if ([self.delegate respondsToSelector:@selector(sliderWillHidePopUpView:)]) {
         [self.delegate sliderWillHidePopUpView:self];
     }
-    [self.popUpView hideAnimated:animated completionBlock:^{
+    [self.popUpViewDetailed hideAnimated:animated completionBlock:^{
         if ([self.delegate respondsToSelector:@selector(sliderDidHidePopUpView:)]) {
             [self.delegate sliderDidHidePopUpView:self];
         }
@@ -336,7 +344,7 @@
     else { // added to window - register notifications
         
         if (self.popUpViewAnimatedColors) { // restart color animation if needed
-            [self.popUpView setAnimatedColors:_popUpViewAnimatedColors withKeyTimes:_keyTimes];
+//            [self.popUpView setAnimatedColors:_popUpViewAnimatedColors withKeyTimes:_keyTimes];
         }
         
         [[NSNotificationCenter defaultCenter] addObserver:self
@@ -349,7 +357,7 @@
 - (void)setValue:(float)value
 {
     [super setValue:value];
-    [self.popUpView setAnimationOffset:[self currentValueOffset] returnColor:^(UIColor *opaqueReturnColor) {
+    [self.popUpViewDetailed setAnimationOffset:[self currentValueOffset] returnColor:^(UIColor *opaqueReturnColor) {
         super.minimumTrackTintColor = opaqueReturnColor;
     }];
 }
@@ -357,10 +365,10 @@
 - (void)setValue:(float)value animated:(BOOL)animated
 {
     if (animated) {
-        [self.popUpView animateBlock:^(CFTimeInterval duration) {
+        [self.popUpViewDetailed animateBlock:^(CFTimeInterval duration) {
             [UIView animateWithDuration:duration animations:^{
                 [super setValue:value animated:animated];
-                [self.popUpView setAnimationOffset:[self currentValueOffset] returnColor:^(UIColor *opaqueReturnColor) {
+                [self.popUpViewDetailed setAnimationOffset:[self currentValueOffset] returnColor:^(UIColor *opaqueReturnColor) {
                     super.minimumTrackTintColor = opaqueReturnColor;
                 }];
                 [self layoutIfNeeded];
@@ -388,7 +396,7 @@
 {
     BOOL continueTrack = [super continueTrackingWithTouch:touch withEvent:event];
     if (continueTrack) {
-        [self.popUpView setAnimationOffset:[self currentValueOffset] returnColor:^(UIColor *opaqueReturnColor) {
+        [self.popUpViewDetailed setAnimationOffset:[self currentValueOffset] returnColor:^(UIColor *opaqueReturnColor) {
             super.minimumTrackTintColor = opaqueReturnColor;
         }];
     }
