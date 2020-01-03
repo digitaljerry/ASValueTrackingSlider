@@ -18,7 +18,7 @@ Pod::Spec.new do |s|
   s.platform         = :ios, '8.0'
   s.source           = { :git => "https://github.com/Edeoinc/ASValueTrackingSlider.git", :tag => "0.12.2" }
   s.source_files     = 'ASValueTrackingSlider'
-  s.resources        = ['*.xib', 'ASValuePopUpViewDetailed.xib', '/*.xib']
+  s.resources        = ['*.xib', 'ASValuePopUpViewDetailed.xib']
   s.requires_arc     = true
 
 end
