@@ -74,6 +74,10 @@
 //    [self.popUpView setFont:font];
 }
 
+- (void)setCoverImage:(UIImage *)coverImage {
+    self.popUpViewDetailed.coverImage = coverImage;
+}
+
 // return the currently displayed color if possible, otherwise return _popUpViewColor
 // if animated colors are set, the color will change each time the slider value changes
 - (UIColor *)popUpViewColor

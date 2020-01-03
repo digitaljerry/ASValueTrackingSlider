@@ -12,6 +12,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface ASValuePopUpViewDetailed : UIView
 
+@property (assign, nonatomic) UIImage *coverImage;
+
 - (UIColor *)color;
 - (void)setColor:(UIColor *)color;
 - (UIColor *)opaqueColor;

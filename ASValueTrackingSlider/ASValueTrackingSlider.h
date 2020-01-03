@@ -62,6 +62,9 @@
 
 // delegate is only needed when used with a TableView or CollectionView - see below
 @property (weak, nonatomic) id<ASValueTrackingSliderDelegate> delegate;
+
+@property (assign, nonatomic) UIImage *coverImage;
+
 @end
 
 

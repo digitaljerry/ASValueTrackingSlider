@@ -169,6 +169,11 @@ NSString *const SliderFillColorAnim2 = @"fillColor";
     self.chapterTitleLabel.text = text;
 }
 
+- (void)setCoverImage:(UIImage *)coverImage {
+    _coverImage = coverImage;
+    self.coverImageView = coverImage;
+}
+
 // _shouldAnimate = YES; causes 'actionForLayer:' to return an animation for layer property changes
 // call the supplied block, then set _shouldAnimate back to NO
 - (void)animateBlock:(void (^)(CFTimeInterval duration))block
