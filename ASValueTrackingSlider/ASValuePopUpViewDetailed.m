@@ -171,7 +171,7 @@ NSString *const SliderFillColorAnim2 = @"fillColor";
 
 - (void)setCoverImage:(UIImage *)coverImage {
     _coverImage = coverImage;
-    self.coverImageView = coverImage;
+    self.coverImageView.image = coverImage;
 }
 
 // _shouldAnimate = YES; causes 'actionForLayer:' to return an animation for layer property changes
